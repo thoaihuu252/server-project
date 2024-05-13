@@ -1,39 +1,82 @@
 package com.itboy.DACNPM.Controller;
 
-import com.itboy.DACNPM.Model.Order;
-import com.itboy.DACNPM.Service.Interface.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.itboy.DACNPM.Service.Interface.IOrderService;
+import com.itboy.DACNPM.dtos.OrderDTO;
+import com.itboy.DACNPM.models.Order;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/api/order")
+@RequestMapping("/v1/api/orders")
+@RequiredArgsConstructor
 public class OrderController {
-    //http://localhost:8080/api/order
-    @Autowired
-    private OrderService orderService;
+    //GET http://localhost:8080/api/v1/orders
+    private final IOrderService orderService;
+    @PostMapping("")
+    public ResponseEntity<?> createOrder(
+            @Valid @RequestBody OrderDTO orderDTO,
+            BindingResult result
+    ) {
+        try {
+            //check request
+            if(result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            //create oder
+            Order orderResponse = orderService.createOrder(orderDTO);
+            return ResponseEntity.ok(orderResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/user/{user_id}") // Thêm biến đường dẫn "user_id"
 
-    @GetMapping("/getAll")
-    public List<Order> getAllProduct(){
-        return orderService.getAllOrder();
+    public ResponseEntity<?> getOrders(@Valid @PathVariable("user_id") Long userId) {
+        try {
+            List<Order> orders = orderService.findByUserId(userId);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @PostMapping("/add")
-    public String addOrder(@RequestBody Order order){
-        orderService.saveOrder(order);
-        return "Đã thêm";
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOrder(@Valid @PathVariable("id") Long orderId) {
+        try {
+            Order existingOrder = orderService.getOrder(orderId);
+            return ResponseEntity.ok(existingOrder);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-    @GetMapping("/getId/{id}")
-    public Optional<Order> getProducById(@PathVariable("id") long id){
-        return orderService.getOrderById(id);
+    @PutMapping("/{id}")
+    //PUT http://localhost:8088/api/v1/orders/2
+    //công việc của admin
+    public ResponseEntity<?> updateOrder(
+            @Valid @PathVariable long id,
+            @Valid @RequestBody OrderDTO orderDTO) {
+
+        try {
+            Order order = orderService.updateOrder(id, orderDTO);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-    @DeleteMapping("/delete/{id}")
-    public String deleteOrder(@PathVariable("id") long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@Valid @PathVariable Long id) {
+        //xóa mềm => cập nhật trường active = false
         orderService.deleteOrder(id);
-        return "Đã xóa ";
+        return ResponseEntity.ok("Order deleted successfully.");
     }
-
-
 }
