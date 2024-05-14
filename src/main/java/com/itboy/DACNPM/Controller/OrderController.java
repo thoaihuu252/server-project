@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/api/orders")
+@RequestMapping("${api.prefix}/orders")
 @RequiredArgsConstructor
 public class OrderController {
-    //GET http://localhost:8080/api/v1/orders
+   // http://localhost:8080/v1/api/orders
     private final IOrderService orderService;
     @PostMapping("")
     public ResponseEntity<?> createOrder(

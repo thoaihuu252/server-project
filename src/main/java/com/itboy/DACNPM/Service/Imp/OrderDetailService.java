@@ -30,6 +30,7 @@ public class OrderDetailService implements IOrderDetailService {
         Product product = productRepository.findById(orderDetailDTO.getProductId())
                 .orElseThrow(() -> new DataNotFoundException(
                         "Cannot find product with id: " + orderDetailDTO.getProductId()));
+
         OrderDetail orderDetail = OrderDetail.builder()
                 .order(order)
                 .product(product)
@@ -39,7 +40,8 @@ public class OrderDetailService implements IOrderDetailService {
                 .color(orderDetailDTO.getColor())
                 .build();
         //lưu vào db
-        return orderDetailRepository.save(orderDetail);
+        orderDetailRepository.save(orderDetail);
+        return orderDetail;
     }
 
     @Override
