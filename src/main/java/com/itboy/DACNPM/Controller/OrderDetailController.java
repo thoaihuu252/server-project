@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/api/order_details")
+@RequestMapping("${api.prefix}/order_details")
 @RequiredArgsConstructor
 public class OrderDetailController {
     private final OrderDetailService orderDetailService;
@@ -23,6 +23,7 @@ public class OrderDetailController {
             @Valid  @RequestBody OrderDetailDTO orderDetailDTO) {
         try {
             OrderDetail newOrderDetail = orderDetailService.createOrderDetail(orderDetailDTO);
+
             return ResponseEntity.ok().body(OrderDetailResponse.fromOrderDetail(newOrderDetail));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

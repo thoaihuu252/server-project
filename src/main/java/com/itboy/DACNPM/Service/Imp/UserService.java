@@ -2,6 +2,8 @@ package com.itboy.DACNPM.Service.Imp;
 
 import com.itboy.DACNPM.Service.Interface.IUserService;
 import com.itboy.DACNPM.components.JwtTokenUtil;
+import com.itboy.DACNPM.repositories.RoleRepository;
+import com.itboy.DACNPM.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,14 +14,14 @@ import org.springframework.stereotype.Service;
 import com.itboy.DACNPM.exceptions.*;
 import com.itboy.DACNPM.models.*;
 import com.itboy.DACNPM.dtos.*;
-import com.itboy.DACNPM.repositories.*;
+
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class UserService implements IUserService {
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
@@ -51,7 +53,6 @@ public class UserService implements IUserService {
         if (userDTO.getFacebookAccountId() == 0 && userDTO.getGoogleAccountId() == 0) {
             String password = userDTO.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
-
             newUser.setPassword(encodedPassword);
         }
         return userRepository.save(newUser);
@@ -66,9 +67,11 @@ public class UserService implements IUserService {
         User existingUser = optionalUser.get();
         if (existingUser.getFacebookAccountId() == 0
                 && existingUser.getGoogleAccountId() == 0) {
+
             if(!passwordEncoder.matches(password, existingUser.getPassword())) {
                 throw new BadCredentialsException("Wrong phone number or password");
             }
+
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 phoneNumber, password,

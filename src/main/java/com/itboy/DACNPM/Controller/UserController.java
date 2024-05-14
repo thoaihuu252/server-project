@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/v1/api/users")
+@RequestMapping(path = "${api.prefix}/users")
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
-    //http://localhost:8080/v1/api/user
+    //http://localhost:8080/v1/api/users
     @PostMapping("/register")
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserDTO userDTO,
@@ -41,6 +41,7 @@ public class UserController {
             }
             // dky user
             User user = userService.createUser(userDTO);
+
             return ResponseEntity.ok(user);
         }  catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -58,6 +59,12 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/test")
+    public String test(){
+        String  a ="test";
+        return a;
+    }
+
 
 
 
