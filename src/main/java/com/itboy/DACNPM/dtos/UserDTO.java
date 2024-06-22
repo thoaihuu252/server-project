@@ -38,7 +38,11 @@ public class UserDTO {
     @JsonProperty("google_account_id")
     private int googleAccountId;
 
+    @JsonProperty("avatar_user")
+    private String avatar_user;
+
     @NotNull(message = "Role ID is required")
     @JsonProperty("role_id")
     private Long roleId;
+
 }

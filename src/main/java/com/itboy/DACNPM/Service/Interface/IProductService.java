@@ -16,6 +16,7 @@ public interface IProductService {
 
     Product updateProduct(long id, ProductDTO productDTO) throws Exception;
     void deleteProduct(long id);
+    Page<ProductResponse> getAllProductsByName(PageRequest pageRequest,String name);
 
 
 }

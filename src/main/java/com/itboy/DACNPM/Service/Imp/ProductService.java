@@ -83,5 +83,14 @@ public class ProductService implements IProductService {
         Optional<Product> optionalProduct = productRepository.findById(id);
         optionalProduct.ifPresent(productRepository::delete);
     }
+    @Override
+    public Page<ProductResponse> getAllProductsByName(PageRequest pageRequest,String name) {
+
+        return productRepository
+                .findByNameContaining(name,pageRequest)
+                .map(ProductResponse::fromProduct);
+
+    }
+
 
 }

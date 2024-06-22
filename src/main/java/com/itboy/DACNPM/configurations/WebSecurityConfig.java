@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.lang.reflect.Array;
@@ -47,7 +48,9 @@ public class WebSecurityConfig {
                                     String.format("%s/users/test", apiPrefix),
                                     String.format("%s/products", apiPrefix),
                                     String.format("%s/products/**", apiPrefix),
-                                    String.format("%s/categories", apiPrefix)
+                                    String.format("%s/categories", apiPrefix),
+                                    String.format("%s/payment/vn-pay", apiPrefix),
+                                    String.format("%s/payment/vn-pay-callback", apiPrefix)
                             )
                             .permitAll()
 
@@ -121,5 +124,18 @@ public class WebSecurityConfig {
 
         );
         return http.build();
+    }
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        config.setExposedHeaders(List.of("x-auth-token"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsFilter(source);
     }
 }
