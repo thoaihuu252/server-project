@@ -110,6 +110,27 @@ public class ProductController {
     public String test(){
         return "test";
     }
+    @GetMapping("/search")
+    public ResponseEntity<ProductListResponse> getProductsbyName(
+            @RequestParam("page")     int page,
+            @RequestParam("limit")    int limit,
+            @RequestParam String name
+    ) {
+        // Tạo Pageable từ thông tin trang và giới hạn
+        PageRequest pageRequest = PageRequest.of(
+                page, limit,
+                Sort.by("createdAt").descending());
+
+        Page<ProductResponse> productPage = productService.getAllProductsByName(pageRequest,name);
+        int totalPages = productPage.getTotalPages();
+
+        List<ProductResponse> products = productPage.getContent();
+        return ResponseEntity.ok(ProductListResponse
+                .builder()
+                .products(products)
+                .totalPages(totalPages)
+                .build());
+    }
 
 
 }
