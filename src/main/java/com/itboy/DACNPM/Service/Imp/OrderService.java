@@ -25,7 +25,6 @@ public class OrderService implements IOrderService {
     private final ModelMapper modelMapper;
     @Override
     public Order createOrder(OrderDTO orderDTO) throws Exception {
-        //tìm xem user'id có tồn tại ko
         User user = userRepository
                 .findById(orderDTO.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: "+orderDTO.getUserId()));
@@ -40,7 +39,7 @@ public class OrderService implements IOrderService {
         modelMapper.map(orderDTO, order);
         order.setUser(user);
         order.setOrderDate(new Date()); //lấy thời điểm hiện tại
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.SUCCESS);
 
         //Kiểm tra shipping date phải >= ngày hôm nay
         LocalDate shippingDate = orderDTO.getShippingDate() == null
@@ -81,16 +80,18 @@ public class OrderService implements IOrderService {
     @Override
     public void deleteOrder(Long id) {
         Order order = orderRepository.findById(id).orElse(null);
-        //no hard-delete, => please soft-delete
-        if(order != null) {
-            order.setActive(false);
-            orderRepository.save(order);
-        }
+        orderRepository.delete(order);
 
     }
+
 
     @Override
     public List<Order> findByUserId(Long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<Order> getAllOrder() {
+        return orderRepository.findAll();
     }
 }

@@ -71,5 +71,9 @@ public class UserController {
         String  a ="test";
         return a;
     }
+    @GetMapping("/all")
+    public List<UserResponse> all(){
+        return userService.getAllUsers();
+    }
 
 }

@@ -45,11 +45,13 @@ public class WebSecurityConfig {
                             .requestMatchers(
                                     String.format("%s/users/register", apiPrefix),
                                     String.format("%s/users/login", apiPrefix),
+                                    String.format("%s/users/all", apiPrefix),
                                     String.format("%s/users/test", apiPrefix),
                                     String.format("%s/products", apiPrefix),
                                     String.format("%s/products/**", apiPrefix),
                                     String.format("%s/categories", apiPrefix),
                                     String.format("%s/payment/vn-pay", apiPrefix),
+                                    String.format("%s/payment/check-result", apiPrefix),
                                     String.format("%s/payment/vn-pay-callback", apiPrefix)
                             )
                             .permitAll()
@@ -92,7 +94,7 @@ public class WebSecurityConfig {
                                     String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
 
                             .requestMatchers(POST,
-                                    String.format("%s/order_details/**", apiPrefix)).hasAnyRole(Role.USER)
+                                    String.format("%s/order_details/**", apiPrefix)).hasAnyRole(Role.USER,Role.ADMIN)
 
                             .requestMatchers(GET,
                                     String.format("%s/order_details/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)

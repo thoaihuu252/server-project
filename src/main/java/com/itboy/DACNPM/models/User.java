@@ -47,7 +47,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "google_account_id")
     private int googleAccountId;
 
-    @Column(name = "avatar_user", length = 700, nullable = false)
+    @Column(name = "avatar_user", length = 700)
     private String avatar_user;
 
 
