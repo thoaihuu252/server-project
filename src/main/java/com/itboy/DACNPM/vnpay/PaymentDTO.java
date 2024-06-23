@@ -9,4 +9,9 @@ public abstract class PaymentDTO {
         public String message;
         public String paymentUrl;
     }
+    @Builder
+    public static class ResultResponse {
+        public String name;
+        public String message;
+    }
 }

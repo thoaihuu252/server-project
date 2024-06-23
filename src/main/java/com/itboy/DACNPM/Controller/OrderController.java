@@ -5,6 +5,7 @@ import com.itboy.DACNPM.dtos.OrderDTO;
 import com.itboy.DACNPM.models.Order;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -75,8 +76,16 @@ public class OrderController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@Valid @PathVariable Long id) {
-        //xóa mềm => cập nhật trường active = false
         orderService.deleteOrder(id);
         return ResponseEntity.ok("Order deleted successfully.");
+    }
+    @GetMapping("")
+    public ResponseEntity<?> getAllOrder() {
+        try {
+            List<Order> existingOrder = orderService.getAllOrder();
+            return ResponseEntity.ok(existingOrder);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

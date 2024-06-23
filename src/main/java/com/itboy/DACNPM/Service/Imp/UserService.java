@@ -4,6 +4,7 @@ import com.itboy.DACNPM.Service.Interface.IUserService;
 import com.itboy.DACNPM.components.JwtTokenUtil;
 import com.itboy.DACNPM.repositories.RoleRepository;
 import com.itboy.DACNPM.repositories.UserRepository;
+import com.itboy.DACNPM.responses.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,8 @@ import com.itboy.DACNPM.exceptions.*;
 import com.itboy.DACNPM.models.*;
 import com.itboy.DACNPM.dtos.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -95,6 +98,16 @@ public class UserService implements IUserService {
         } else {
             throw new Exception("User not found");
         }
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers()  {
+        List<User> users = userRepository.findAll();
+        List<UserResponse> userResponse = new ArrayList<>();
+        for(User user : users) {
+            userResponse.add( new UserResponse().fromUser(user));
+        }
+        return userResponse;
     }
 
 }
