@@ -25,7 +25,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtTokenUtil {
     @Value("${jwt.expiration}")
-    private int expiration; //save to an environment variable
+    private int expiration;
     @Value("${jwt.secretKey}")
     private String secretKey;
     public String generateToken(com.itboy.DACNPM.models.User user) throws Exception{
@@ -49,7 +49,6 @@ public class JwtTokenUtil {
     }
     private Key getSignInKey() {
         byte[] bytes = Decoders.BASE64.decode(secretKey);
-        //Keys.hmacShaKeyFor(Decoders.BASE64.decode("TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI="));
         return Keys.hmacShaKeyFor(bytes);
     }
     private String generateSecretKey() {
